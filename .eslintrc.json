@@ -59,7 +59,7 @@
             },
             {
                 "selector": "property",
-                "format": ["camelCase", "snake_case", "UPPER_CASE"]
+                "format": ["camelCase", "snake_case"]
             },
             {
                 "selector": "method",
