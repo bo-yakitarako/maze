@@ -2,11 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { StylesProvider } from '@material-ui/styles';
 import { MazeCanvas } from './MazeCanvas';
+import { SPController } from './SPController';
 
 const App: React.FC = () => (
   <StylesProvider injectFirst>
     <AppWrapper>
       <MazeCanvas />
+      <SPController />
     </AppWrapper>
   </StylesProvider>
 );

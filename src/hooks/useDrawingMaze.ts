@@ -1,17 +1,22 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { appModule } from '../module/appModule';
-import { useAppSelector } from './useAppSelector';
+import { useShallowEqualSelector } from './useShallowEqualSelector';
 
 const useDrawingMaze = () => {
   const dispatch = useDispatch();
-  const mazeArray = useAppSelector(({ mazeArray }) => mazeArray);
+  const { mazeArray, playerLocation } = useShallowEqualSelector(
+    ({ mazeArray, playerLocation }) => ({
+      mazeArray,
+      playerLocation,
+    }),
+  );
   useEffect(() => {
     dispatch(appModule.actions.generateMaze());
   }, []);
   useEffect(() => {
-    drawMaze(mazeArray);
-  }, [mazeArray]);
+    drawMaze(mazeArray, playerLocation);
+  }, [mazeArray, playerLocation]);
 };
 
 export { useDrawingMaze, getCanvasWidth };
@@ -26,40 +31,42 @@ const getSquareWidth = (mazeSize: number) => {
 };
 
 const getRawCanvasWidth = () => {
-  if (window.innerWidth < 377) {
-    return 300;
-  }
-  if (window.innerWidth < 520) {
-    return 360;
-  }
-  if (window.innerWidth < 640) {
-    return 480;
+  if (window.innerWidth < 448) {
+    return window.innerWidth * 0.85;
   }
   if (window.innerWidth < 778) {
-    return 600;
+    return window.innerWidth * 0.75;
   }
   return 640;
 };
 
-const drawMaze = (mazeArray: boolean[][]) => {
-  if (mazeArray[1][mazeArray[1].length - 1]) {
-    return;
-  }
+const drawMaze = (
+  mazeArray: boolean[][],
+  [playerLocationX, playerLocationY]: [number, number],
+) => {
   const squareWidth = getSquareWidth(mazeArray.length);
   const canvas = document.querySelector('#mazeCanvas') as HTMLCanvasElement;
   const context = canvas.getContext('2d') as CanvasRenderingContext2D;
   context.fillStyle = 'white';
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.fillStyle = 'black';
+  const fillRect = (x: number, y: number) => {
+    context.fillRect(
+      x * squareWidth,
+      y * squareWidth,
+      squareWidth,
+      squareWidth,
+    );
+  };
   mazeArray.forEach((rowArray, yIndex) => {
     rowArray.forEach((isLoad, xIndex) => {
       if (!isLoad) {
-        context.fillRect(
-          xIndex * squareWidth,
-          yIndex * squareWidth,
-          squareWidth,
-          squareWidth,
-        );
+        fillRect(xIndex, yIndex);
+      }
+      if (xIndex === playerLocationX && yIndex === playerLocationY) {
+        context.fillStyle = 'cyan';
+        fillRect(xIndex, yIndex);
+        context.fillStyle = 'black';
       }
     });
   });
