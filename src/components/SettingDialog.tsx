@@ -91,7 +91,7 @@ export { SettingDialog };
 const FabLayout = styled.div`
   position: absolute;
   right: 15px;
-  bottom: 15px;
+  bottom: 0;
 `;
 
 const TextFieldLayout = styled.div`

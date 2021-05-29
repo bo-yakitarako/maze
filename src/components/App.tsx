@@ -18,10 +18,10 @@ const App: React.FC = () => (
 export { App };
 
 const AppWrapper = styled.div`
-  position: fixed;
+  position: relative;
   display: flex;
   width: 100%;
-  height: 100vh;
+  height: 95vh;
   top: 0;
   left: 0;
   flex-direction: column;
