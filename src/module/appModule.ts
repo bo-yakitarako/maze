@@ -6,7 +6,7 @@ import {
 } from '@reduxjs/toolkit';
 import { MazeGenerator } from '../mazeGenerator/MazeGenerator';
 
-const mazeSize = 31;
+const mazeSize = 20;
 const initialState = {
   mazeSize,
   mazeArray: [...Array(mazeSize + 2)].map(() =>
@@ -30,6 +30,7 @@ const appModule = createSlice({
       return {
         ...state,
         mazeArray: mazeGenerator.generate(),
+        playerLocation: [1, state.mazeSize + 1],
       };
     },
     move: (state, { payload }: PayloadAction<Direction>) => {

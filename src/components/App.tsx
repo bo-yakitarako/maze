@@ -3,12 +3,14 @@ import styled from 'styled-components';
 import { StylesProvider } from '@material-ui/styles';
 import { MazeCanvas } from './MazeCanvas';
 import { SPController } from './SPController';
+import { SettingDialog } from './SettingDialog';
 
 const App: React.FC = () => (
   <StylesProvider injectFirst>
     <AppWrapper>
       <MazeCanvas />
       <SPController />
+      <SettingDialog />
     </AppWrapper>
   </StylesProvider>
 );

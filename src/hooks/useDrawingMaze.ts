@@ -32,7 +32,7 @@ const getSquareWidth = (mazeSize: number) => {
 
 const getRawCanvasWidth = () => {
   if (window.innerWidth < 448) {
-    return window.innerWidth * 0.85;
+    return window.innerWidth * 0.9;
   }
   if (window.innerWidth < 778) {
     return window.innerWidth * 0.75;
