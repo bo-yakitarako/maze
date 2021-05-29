@@ -4,9 +4,14 @@ import {
   getDefaultMiddleware,
   PayloadAction,
 } from '@reduxjs/toolkit';
+import { MazeGenerator } from '../mazeGenerator/MazeGenerator';
 
+const mazeSize = 31;
 const initialState = {
-  mazeSize: 20,
+  mazeSize,
+  mazeArray: [...Array(mazeSize)].map(() =>
+    [...Array(mazeSize)].map(() => true),
+  ),
 };
 
 const appModule = createSlice({
@@ -17,6 +22,13 @@ const appModule = createSlice({
       return {
         ...state,
         mazeSize: payload,
+      };
+    },
+    generateMaze: (state) => {
+      const mazeGenerator = new MazeGenerator(state.mazeSize);
+      return {
+        ...state,
+        mazeArray: mazeGenerator.generate(),
       };
     },
   },

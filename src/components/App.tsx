@@ -6,7 +6,6 @@ import { MazeCanvas } from './MazeCanvas';
 const App: React.FC = () => (
   <StylesProvider injectFirst>
     <AppWrapper>
-      うんちぶり
       <MazeCanvas />
     </AppWrapper>
   </StylesProvider>
