@@ -1,10 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { StylesProvider } from '@material-ui/styles';
+import { MazeCanvas } from './MazeCanvas';
 
 const App: React.FC = () => (
   <StylesProvider injectFirst>
-    <AppWrapper>うんちぶり</AppWrapper>
+    <AppWrapper>
+      うんちぶり
+      <MazeCanvas />
+    </AppWrapper>
   </StylesProvider>
 );
 
@@ -17,6 +21,7 @@ const AppWrapper = styled.div`
   height: 100vh;
   top: 0;
   left: 0;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 `;
