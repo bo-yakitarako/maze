@@ -6,7 +6,7 @@ import {
 } from '@reduxjs/toolkit';
 import { MazeGenerator } from '../mazeGenerator/MazeGenerator';
 
-const mazeSize = 20;
+const mazeSize = localStorage.mazeSize * 1 || 20;
 const initialState = {
   mazeSize,
   mazeArray: [...Array(mazeSize + 2)].map(() =>
@@ -20,6 +20,7 @@ const appModule = createSlice({
   initialState,
   reducers: {
     setMazeSize: (state, { payload }: PayloadAction<number>) => {
+      localStorage.mazeSize = payload;
       return {
         ...state,
         mazeSize: payload,
