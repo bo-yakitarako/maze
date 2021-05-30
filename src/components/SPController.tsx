@@ -1,25 +1,43 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import styled, { css } from 'styled-components';
 import media from 'styled-media-query';
-import { appModule, Direction } from '../module/appModule';
+import { useSPController } from '../hooks/useSPController';
+import { Direction } from '../module/appModule';
 
 const SPController: React.FC = () => {
-  const dispatch = useDispatch();
-  const go = (direction: Direction) => () => {
-    dispatch(appModule.actions.move(direction));
-  };
+  const { go: goRaw, stop } = useSPController();
+  const go =
+    (direction: Direction) => (event: React.PointerEvent<HTMLDivElement>) => {
+      event.preventDefault();
+      goRaw(direction);
+    };
   return (
     <Wrapper>
       <ArrowVerticalLayout>
-        <ArrowUp onClick={go('up')} />
+        <ArrowUp
+          onPointerDown={go('up')}
+          onPointerLeave={stop}
+          onPointerUp={stop}
+        />
       </ArrowVerticalLayout>
       <ArrowHorizontalLayout>
-        <ArrowLeft onClick={go('left')} />
-        <ArrowRight onClick={go('right')} />
+        <ArrowLeft
+          onPointerDown={go('left')}
+          onPointerLeave={stop}
+          onPointerUp={stop}
+        />
+        <ArrowRight
+          onPointerDown={go('right')}
+          onPointerLeave={stop}
+          onPointerUp={stop}
+        />
       </ArrowHorizontalLayout>
       <ArrowVerticalLayout>
-        <ArrowDown onClick={go('down')} />
+        <ArrowDown
+          onPointerDown={go('down')}
+          onPointerLeave={stop}
+          onPointerUp={stop}
+        />
       </ArrowVerticalLayout>
     </Wrapper>
   );
