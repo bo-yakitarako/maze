@@ -39,6 +39,7 @@ const SettingDialog: React.FC = () => {
   const handleRegenerate = () => {
     dispatch(setMazeSize(formMazeSize));
     dispatch(generateMaze());
+    setOpen(false);
   };
 
   return (
