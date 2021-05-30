@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { appModule } from '../module/appModule';
+import { useMediaQuery } from './useMediaQuery';
 import { useShallowEqualSelector } from './useShallowEqualSelector';
 
 const useDrawingMaze = () => {
@@ -11,31 +12,34 @@ const useDrawingMaze = () => {
       playerLocation,
     }),
   );
+
+  const { windowWidth } = useMediaQuery();
+
   useEffect(() => {
     dispatch(appModule.actions.generateMaze());
   }, []);
   useEffect(() => {
-    drawMaze(mazeArray, playerLocation);
-  }, [mazeArray, playerLocation]);
+    drawMaze(mazeArray, playerLocation, windowWidth);
+  }, [mazeArray, playerLocation, windowWidth]);
 };
 
 export { useDrawingMaze, getCanvasWidth };
 
-const getCanvasWidth = (mazeSize: number) =>
-  getSquareWidth(mazeSize) * mazeSize;
+const getCanvasWidth = (mazeSize: number, windowWidth: number) =>
+  getSquareWidth(mazeSize, windowWidth) * mazeSize;
 
-const getSquareWidth = (mazeSize: number) => {
-  const rawCanvasSize = getRawCanvasWidth();
+const getSquareWidth = (mazeSize: number, windowWidth: number) => {
+  const rawCanvasSize = getRawCanvasWidth(windowWidth);
   const squareWidth = Math.floor(rawCanvasSize / mazeSize);
   return squareWidth;
 };
 
-const getRawCanvasWidth = () => {
-  if (window.innerWidth < 448) {
-    return window.innerWidth * 0.9;
+const getRawCanvasWidth = (windowWidth: number) => {
+  if (windowWidth < 448) {
+    return windowWidth * 0.9;
   }
-  if (window.innerWidth < 778) {
-    return window.innerWidth * 0.75;
+  if (windowWidth < 778) {
+    return windowWidth * 0.75;
   }
   return 640;
 };
@@ -43,8 +47,9 @@ const getRawCanvasWidth = () => {
 const drawMaze = (
   mazeArray: boolean[][],
   [playerLocationX, playerLocationY]: [number, number],
+  windowWidth: number,
 ) => {
-  const squareWidth = getSquareWidth(mazeArray.length);
+  const squareWidth = getSquareWidth(mazeArray.length, windowWidth);
   const canvas = document.querySelector('#mazeCanvas') as HTMLCanvasElement;
   const context = canvas.getContext('2d') as CanvasRenderingContext2D;
   context.fillStyle = 'white';
