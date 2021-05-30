@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { appModule, Direction } from '../module/appModule';
 
-const useSPController = () => {
+const useController = () => {
   const dispatch = useDispatch();
   const [direction, setDirection] = useState<Direction | null>(null);
   const [pressedTime, setPressedTime] = useState(0);
@@ -32,4 +32,4 @@ const useSPController = () => {
   return { go, stop };
 };
 
-export { useSPController };
+export { useController };

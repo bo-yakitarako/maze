@@ -1,11 +1,11 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import media from 'styled-media-query';
-import { useSPController } from '../hooks/useSPController';
+import { useController } from '../hooks/useController';
 import { Direction } from '../module/appModule';
 
 const SPController: React.FC = () => {
-  const { go: goRaw, stop } = useSPController();
+  const { go: goRaw, stop } = useController();
   const go =
     (direction: Direction) => (event: React.PointerEvent<HTMLDivElement>) => {
       event.preventDefault();

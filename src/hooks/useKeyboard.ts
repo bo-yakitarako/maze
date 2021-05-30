@@ -1,37 +1,36 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { appModule } from '../module/appModule';
-
-const { move } = appModule.actions;
+import { Direction } from '../module/appModule';
+import { useController } from './useController';
 
 type Arrow = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
 
+const keyToDirection: { [key in Arrow]: Direction } = {
+  ArrowUp: 'up', // eslint-disable-line @typescript-eslint/naming-convention
+  ArrowDown: 'down', // eslint-disable-line @typescript-eslint/naming-convention
+  ArrowLeft: 'left', // eslint-disable-line @typescript-eslint/naming-convention
+  ArrowRight: 'right', // eslint-disable-line @typescript-eslint/naming-convention
+};
+
 const useKeyboard = () => {
-  const dispatch = useDispatch();
+  const { go, stop } = useController();
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
     };
   }, []);
 
   const handleKeyDown = (event: KeyboardEvent) => {
-    switch (event.key as Arrow) {
-      case 'ArrowUp':
-        dispatch(move('up'));
-        break;
-      case 'ArrowDown':
-        dispatch(move('down'));
-        break;
-      case 'ArrowLeft':
-        dispatch(move('left'));
-        break;
-      case 'ArrowRight':
-        dispatch(move('right'));
-        break;
-      default:
-        break;
+    const key = event.key as Arrow;
+    go(keyToDirection[key]);
+  };
+
+  const handleKeyUp = (event: KeyboardEvent) => {
+    if (Object.keys(keyToDirection).includes(event.key)) {
+      stop();
     }
   };
 };
