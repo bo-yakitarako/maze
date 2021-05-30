@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 import {
   configureStore,
   createSlice,
@@ -5,6 +7,7 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { MazeGenerator } from '../mazeGenerator/MazeGenerator';
+import { moveSquare } from '../reducers/appReducer';
 
 const mazeSize = localStorage.mazeSize * 1 || 20;
 const initialState = {
@@ -12,7 +15,10 @@ const initialState = {
   mazeArray: [...Array(mazeSize + 2)].map(() =>
     [...Array(mazeSize + 2)].map(() => true),
   ),
+  goalX: mazeSize + 1,
   playerLocation: [1, mazeSize + 1] as [number, number],
+  start: false,
+  goal: false,
 };
 
 const appModule = createSlice({
@@ -28,32 +34,18 @@ const appModule = createSlice({
     },
     generateMaze: (state) => {
       const mazeGenerator = new MazeGenerator(state.mazeSize);
+      const mazeArray = mazeGenerator.generate();
       return {
         ...state,
-        mazeArray: mazeGenerator.generate(),
+        mazeArray,
+        goalX: mazeArray[0].findIndex((isLoad) => isLoad),
         playerLocation: [1, state.mazeSize + 1],
+        start: false,
+        goal: false,
       };
     },
     move: (state, { payload }: PayloadAction<Direction>) => {
-      const { mazeArray, playerLocation } = state;
-      const [currentX, currentY] = playerLocation;
-      const [moveX, moveY] = parseDirectionArray(payload);
-      const [nextX, nextY] = [currentX + moveX, currentY + moveY];
-      if (
-        nextX < 0 ||
-        nextX > mazeArray.length - 1 ||
-        nextY < 0 ||
-        nextY > mazeArray.length - 1
-      ) {
-        return { ...state };
-      }
-      if (!mazeArray[nextY][nextX]) {
-        return { ...state };
-      }
-      return {
-        ...state,
-        playerLocation: [nextX, nextY],
-      };
+      moveSquare(state, payload);
     },
   },
 });
@@ -68,18 +60,3 @@ export type AppState = ReturnType<typeof store.getState>;
 export { appModule, store };
 
 export type Direction = 'up' | 'down' | 'left' | 'right';
-
-const parseDirectionArray = (direction: Direction): [number, number] => {
-  switch (direction) {
-    case 'up':
-      return [0, -1];
-    case 'down':
-      return [0, 1];
-    case 'left':
-      return [-1, 0];
-    case 'right':
-      return [1, 0];
-    default:
-      return [0, 0];
-  }
-};
