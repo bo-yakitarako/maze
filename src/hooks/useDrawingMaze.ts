@@ -41,7 +41,7 @@ const getRawCanvasWidth = (windowWidth: number) => {
   if (windowWidth < 778) {
     return windowWidth * 0.75;
   }
-  return 640;
+  return 560;
 };
 
 const drawMaze = (
