@@ -1,9 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { startTick } from '../actions/timerAction';
 import { appModule, Direction } from '../module/appModule';
+
+const { move } = appModule.actions;
 
 const useController = () => {
   const dispatch = useDispatch();
+
   const [direction, setDirection] = useState<Direction | null>(null);
   const [pressedTime, setPressedTime] = useState(0);
 
@@ -13,21 +17,23 @@ const useController = () => {
       if (direction === null || pressedTime < 200) {
         return;
       }
-      dispatch(appModule.actions.move(direction));
+      dispatch(move(direction));
     }, 50);
     return () => {
       clearInterval(intervalHandler);
     };
   }, [direction, pressedTime]);
 
-  const go = (direction: Direction) => {
-    dispatch(appModule.actions.move(direction));
+  const go = useCallback((direction: Direction) => {
+    dispatch(move(direction));
+    dispatch(startTick());
     setDirection(direction);
     setPressedTime(0);
-  };
-  const stop = () => {
+  }, []);
+
+  const stop = useCallback(() => {
     setDirection(null);
-  };
+  }, []);
 
   return { go, stop };
 };

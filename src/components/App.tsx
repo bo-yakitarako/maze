@@ -4,10 +4,12 @@ import { StylesProvider } from '@material-ui/styles';
 import { MazeCanvas } from './MazeCanvas';
 import { SPController } from './SPController';
 import { SettingDialog } from './SettingDialog';
+import { Timer } from './Timer';
 
 const App: React.FC = () => (
   <StylesProvider injectFirst>
     <AppWrapper>
+      <Timer />
       <MazeCanvas />
       <SPController />
       <SettingDialog />
