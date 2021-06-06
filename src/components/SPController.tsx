@@ -16,28 +16,32 @@ const SPController: React.FC = () => {
   return (
     <Wrapper>
       <ArrowVerticalLayout>
-        <ArrowUp
-          onPointerDown={go('up')}
-          onPointerLeave={stop}
-          onPointerUp={stop}
-        />
+        <div onPointerDown={go('up')} onPointerLeave={stop} onPointerUp={stop}>
+          <ArrowUp />
+        </div>
       </ArrowVerticalLayout>
       <ArrowHorizontalLayout>
-        <ArrowLeft
+        <div
           onPointerDown={go('left')}
           onPointerLeave={stop}
           onPointerUp={stop}
-        />
-        <ArrowDown
+        >
+          <ArrowLeft />
+        </div>
+        <div
           onPointerDown={go('down')}
           onPointerLeave={stop}
           onPointerUp={stop}
-        />
-        <ArrowRight
+        >
+          <ArrowDown />
+        </div>
+        <div
           onPointerDown={go('right')}
           onPointerLeave={stop}
           onPointerUp={stop}
-        />
+        >
+          <ArrowRight />
+        </div>
       </ArrowHorizontalLayout>
     </Wrapper>
   );
