@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { StylesProvider } from '@material-ui/styles';
 import { MazeCanvas } from './MazeCanvas';
 import { SPController } from './SPController';
-import { SettingDialog } from './SettingDialog';
 import { Timer } from './Timer';
 
 const App: React.FC = () => (
@@ -12,7 +11,6 @@ const App: React.FC = () => (
       <Timer />
       <MazeCanvas />
       <SPController />
-      <SettingDialog />
     </AppWrapper>
   </StylesProvider>
 );

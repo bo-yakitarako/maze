@@ -1,16 +1,18 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
-import media from 'styled-media-query';
+import styled from 'styled-components';
 import { useController } from '../hooks/useController';
 import { Direction } from '../module/appModule';
+import { media } from '../module/styleUtility';
 
 const SPController: React.FC = () => {
   const { go: goRaw, stop } = useController();
+
   const go =
     (direction: Direction) => (event: React.PointerEvent<HTMLDivElement>) => {
       event.preventDefault();
       goRaw(direction);
     };
+
   return (
     <Wrapper>
       <ArrowVerticalLayout>
@@ -26,19 +28,17 @@ const SPController: React.FC = () => {
           onPointerLeave={stop}
           onPointerUp={stop}
         />
+        <ArrowDown
+          onPointerDown={go('down')}
+          onPointerLeave={stop}
+          onPointerUp={stop}
+        />
         <ArrowRight
           onPointerDown={go('right')}
           onPointerLeave={stop}
           onPointerUp={stop}
         />
       </ArrowHorizontalLayout>
-      <ArrowVerticalLayout>
-        <ArrowDown
-          onPointerDown={go('down')}
-          onPointerLeave={stop}
-          onPointerUp={stop}
-        />
-      </ArrowVerticalLayout>
     </Wrapper>
   );
 };
@@ -46,7 +46,7 @@ const SPController: React.FC = () => {
 export { SPController };
 
 const Wrapper = styled.div`
-  width: 250px;
+  width: 100%;
   margin-top: 15px;
   ${media.greaterThan('medium')`
     display: none;
@@ -60,39 +60,45 @@ const ArrowVerticalLayout = styled.div`
 
 const ARROW_COLOR = '#d2e3f5';
 
-const ArrowBase = css`
-  width: 0;
-  height: 0;
-  border-style: solid;
-`;
-
 const ArrowUp = styled.div`
-  ${ArrowBase}
-  border-width: 0 37.5px 90px 37.5px;
-  border-color: transparent transparent ${ARROW_COLOR} transparent;
+  width: 70px;
+  height: 90px;
+  background-color: ${ARROW_COLOR};
+  clip-path: polygon(
+    100% 50%,
+    70% 40%,
+    70% 100%,
+    30% 100%,
+    30% 40%,
+    0 50%,
+    50% 0
+  );
+  ${media.lessThan('tiny')`
+    width: 55px;
+    height: 70px;
+  `}
 `;
 
-const ArrowDown = styled.div`
-  ${ArrowBase}
-  border-width: 90px 37.5px 0 37.5px;
-  border-color: ${ARROW_COLOR} transparent transparent transparent;
+const ArrowDown = styled(ArrowUp)`
+  transform: rotate(180deg);
 `;
 
 const ArrowHorizontalLayout = styled.div`
   display: flex;
-  width: 100%;
-  height: 75px;
+  width: 270px;
+  height: 90px;
   justify-content: space-between;
+  margin: 10px auto 0 auto;
+  ${media.lessThan('tiny')`
+    width: 200px;
+    height: 70px;
+  `}
 `;
 
-const ArrowLeft = styled.div`
-  ${ArrowBase}
-  border-width: 37.5px 90px 37.5px 0;
-  border-color: transparent ${ARROW_COLOR} transparent transparent;
+const ArrowLeft = styled(ArrowUp)`
+  transform: rotate(-90deg);
 `;
 
-const ArrowRight = styled.div`
-  ${ArrowBase}
-  border-width: 37.5px 0 37.5px 90px;
-  border-color: transparent transparent transparent ${ARROW_COLOR};
+const ArrowRight = styled(ArrowUp)`
+  transform: rotate(90deg);
 `;

@@ -5,10 +5,10 @@ import { useController } from './useController';
 type Arrow = 'ArrowUp' | 'ArrowDown' | 'ArrowLeft' | 'ArrowRight';
 
 const keyToDirection: { [key in Arrow]: Direction } = {
-  ArrowUp: 'up', // eslint-disable-line @typescript-eslint/naming-convention
-  ArrowDown: 'down', // eslint-disable-line @typescript-eslint/naming-convention
-  ArrowLeft: 'left', // eslint-disable-line @typescript-eslint/naming-convention
-  ArrowRight: 'right', // eslint-disable-line @typescript-eslint/naming-convention
+  ArrowUp: 'up',
+  ArrowDown: 'down',
+  ArrowLeft: 'left',
+  ArrowRight: 'right',
 };
 
 const useKeyboard = () => {

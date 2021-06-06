@@ -94,9 +94,9 @@ const SettingDialog: React.FC = () => {
 export { SettingDialog };
 
 const FabLayout = styled.div`
-  position: fixed;
-  right: 15px;
-  bottom: 15px;
+  position: absolute;
+  right: 8px;
+  bottom: -60px;
 `;
 
 const TextFieldLayout = styled.div`

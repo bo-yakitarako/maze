@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { BREAKPOINT } from '../module/styleUtility';
 
 const useMediaQuery = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -21,10 +22,12 @@ const useMediaQuery = () => {
     }, 300);
   };
 
-  const isSp = () => windowWidth < 778;
-  const isPc = () => !isSp();
-  const isSpSmall = () => windowWidth < 448;
-  return { windowWidth, isSp, isPc, isSpSmall };
+  const isPc = () => windowWidth > BREAKPOINT.MEDIUM;
+  const isTablet = () =>
+    BREAKPOINT.SMALL < windowWidth && windowWidth < BREAKPOINT.MEDIUM;
+  const isSp = () => windowWidth < BREAKPOINT.SMALL;
+  const isSpSmall = () => windowWidth < BREAKPOINT.TINY;
+  return { windowWidth, isPc, isTablet, isSp, isSpSmall };
 };
 
 export { useMediaQuery };
