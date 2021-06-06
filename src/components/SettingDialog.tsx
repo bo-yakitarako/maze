@@ -15,6 +15,7 @@ import {
 import { Settings } from '@material-ui/icons';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { appModule } from '../module/appModule';
+import { startTick } from '../actions/timerAction';
 
 const { setMazeSize, generateMaze, pauseMaze, restartMaze } = appModule.actions;
 
@@ -33,6 +34,7 @@ const SettingDialog: React.FC = () => {
     setFormMazeSize(mazeSize);
     setOpen(false);
     dispatch(restartMaze());
+    dispatch(startTick());
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

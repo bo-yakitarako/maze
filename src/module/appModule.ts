@@ -69,22 +69,26 @@ const appModule = createSlice({
       moveSquare(state, payload);
     },
     pauseMaze: (state) => {
+      if (state.pause) {
+        return;
+      }
       state.pause = true;
       clearInterval(state.timer.intervalNumber);
       state.timer.intervalNumber = 0;
       state.timer.pausedUnixtime = new Date().getTime();
     },
     restartMaze: (state) => {
+      const { playerLocation, goalX } = state;
+      if (playerLocation[0] === goalX && playerLocation[1] === 0) {
+        return;
+      }
       state.pause = false;
+      const { pausedUnixtime } = state.timer;
+      state.timer.pauseInterval += new Date().getTime() - pausedUnixtime;
+      state.timer.pausedUnixtime = 0;
     },
     tick: (state) => {
-      let { pauseInterval } = state.timer;
-      const { pausedUnixtime, startUnixtime } = state.timer;
-      if (pausedUnixtime > 0) {
-        pauseInterval += new Date().getTime() - pausedUnixtime;
-        state.timer.pauseInterval = pauseInterval;
-        state.timer.pausedUnixtime = 0;
-      }
+      const { pauseInterval, startUnixtime } = state.timer;
       const time = new Date().getTime() - startUnixtime - pauseInterval;
       state.timer.time = time;
     },
