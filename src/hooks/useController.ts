@@ -14,7 +14,7 @@ const useController = () => {
   useEffect(() => {
     const intervalHandler = setInterval(() => {
       setPressedTime((prev) => (direction !== null ? prev + 50 : prev));
-      if (direction === null || pressedTime < 200) {
+      if (direction === null || pressedTime < 150) {
         return;
       }
       dispatch(move(direction));
