@@ -10,6 +10,9 @@ import { MazeGenerator } from '../mazeGenerator/MazeGenerator';
 import { moveSquare } from '../reducers/appReducer';
 
 const mazeSize = localStorage.mazeSize * 1 || 20;
+const bestTime = JSON.parse(localStorage.bestTime || '{}') as {
+  [key in number]: number | undefined;
+};
 const initialState = {
   mazeSize,
   mazeArray: [...Array(mazeSize + 2)].map(() =>
@@ -26,6 +29,7 @@ const initialState = {
     pauseInterval: 0,
     intervalNumber: 0,
   },
+  bestTime,
 };
 
 const appModule = createSlice({
