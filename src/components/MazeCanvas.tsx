@@ -14,7 +14,7 @@ const MazeCanvas: React.FC = () => {
   useKeyboard();
   return (
     <MazeWrapper>
-      <canvas id="mazeCanvas" width={canvasSize} height={canvasSize} />;
+      <canvas id="mazeCanvas" width={canvasSize} height={canvasSize} />
       <SettingDialog />
     </MazeWrapper>
   );
