@@ -6,12 +6,16 @@ import { useShallowEqualSelector } from './useShallowEqualSelector';
 
 const useDrawingMaze = () => {
   const dispatch = useDispatch();
-  const { mazeArray, playerLocation } = useShallowEqualSelector(
-    ({ mazeArray, playerLocation }) => ({
-      mazeArray,
-      playerLocation,
-    }),
-  );
+  const { mazeArray, playerLocation, start, pause, goalX } =
+    useShallowEqualSelector(
+      ({ mazeArray, playerLocation, start, pause, goalX }) => ({
+        mazeArray,
+        playerLocation,
+        start,
+        pause,
+        goalX,
+      }),
+    );
 
   const { windowWidth } = useMediaQuery();
 
@@ -19,8 +23,10 @@ const useDrawingMaze = () => {
     dispatch(appModule.actions.generateMaze());
   }, []);
   useEffect(() => {
-    drawMaze(mazeArray, playerLocation, windowWidth);
-  }, [mazeArray, playerLocation, windowWidth]);
+    const goal = playerLocation[0] === goalX && playerLocation[1] === 0;
+    const blind = !goal && (!start || pause);
+    drawMaze(mazeArray, playerLocation, windowWidth, blind);
+  }, [mazeArray, playerLocation, windowWidth, start, pause]);
 };
 
 export { useDrawingMaze, getCanvasWidth };
@@ -48,13 +54,11 @@ const drawMaze = (
   mazeArray: boolean[][],
   [playerLocationX, playerLocationY]: [number, number],
   windowWidth: number,
+  blind: boolean,
 ) => {
   const squareWidth = getSquareWidth(mazeArray.length, windowWidth);
   const canvas = document.querySelector('#mazeCanvas') as HTMLCanvasElement;
   const context = canvas.getContext('2d') as CanvasRenderingContext2D;
-  context.fillStyle = 'white';
-  context.fillRect(0, 0, canvas.width, canvas.height);
-  context.fillStyle = 'black';
   const fillRect = (x: number, y: number) => {
     context.fillRect(
       x * squareWidth,
@@ -63,6 +67,22 @@ const drawMaze = (
       squareWidth,
     );
   };
+  if (blind) {
+    context.fillStyle = 'black';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.fillStyle = 'white';
+    const fillPlayerAndStart = (y: number) => {
+      context.fillStyle =
+        playerLocationX === 1 && y === playerLocationY ? 'cyan' : 'white';
+      fillRect(1, y);
+    };
+    fillPlayerAndStart(mazeArray.length - 1);
+    fillPlayerAndStart(mazeArray.length - 2);
+    return;
+  }
+  context.fillStyle = 'white';
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = 'black';
   mazeArray.forEach((rowArray, yIndex) => {
     rowArray.forEach((isLoad, xIndex) => {
       if (!isLoad) {
