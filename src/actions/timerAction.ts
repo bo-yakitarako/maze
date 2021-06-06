@@ -18,7 +18,7 @@ const startTick = createAsyncThunk<void, void, ThunkAction>(
     }
     const intervalNumber = window.setInterval(() => {
       dispatch(tick());
-    }, 10);
+    }, 30);
     dispatch(setIntevalNumber(intervalNumber));
   },
 );
