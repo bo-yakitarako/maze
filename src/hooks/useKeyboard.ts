@@ -25,7 +25,9 @@ const useKeyboard = () => {
 
   const handleKeyDown = (event: KeyboardEvent) => {
     const key = event.key as Arrow;
-    go(keyToDirection[key]);
+    if (Object.keys(keyToDirection).includes(key)) {
+      go(keyToDirection[key]);
+    }
   };
 
   const handleKeyUp = (event: KeyboardEvent) => {
