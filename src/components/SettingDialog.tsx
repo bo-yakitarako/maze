@@ -70,6 +70,9 @@ const SettingDialog: React.FC = () => {
             PCの場合は十字キーで、スマホの場合は画面下部のコントローラーで操作できるよ。たぶんね
           </DialogContentText>
           <DialogContentText>
+            スタート時や、この設定画面を開いたときは迷路の中身は見えないようになってるよ。タイマー停止状態で迷路の予習ができちゃうからね
+          </DialogContentText>
+          <DialogContentText>
             迷路を作り直したり、迷路の大きさを変えたい場合は好きなサイズを選んで「再生成」を押そうね
           </DialogContentText>
           <TextFieldLayout>
@@ -114,4 +117,5 @@ const FabLayout = styled.div`
 const TextFieldLayout = styled.div`
   display: flex;
   justify-content: center;
+  margin-top: 20px;
 `;
