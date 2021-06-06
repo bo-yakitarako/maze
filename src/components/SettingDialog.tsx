@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import {
@@ -22,31 +22,41 @@ const { setMazeSize, generateMaze, pauseMaze, restartMaze } = appModule.actions;
 const SettingDialog: React.FC = () => {
   const dispatch = useDispatch();
 
-  const mazeSize = useAppSelector(({ mazeSize }) => mazeSize);
+  const { mazeSize, start } = useAppSelector(({ mazeSize, start }) => ({
+    mazeSize,
+    start,
+  }));
 
   const [formMazeSize, setFormMazeSize] = useState(mazeSize);
   const [open, setOpen] = useState(false);
-  const handleOpen = () => {
+  const handleOpen = useCallback(() => {
     setOpen(true);
-    dispatch(pauseMaze());
-  };
-  const handleClose = () => {
+    if (start) {
+      dispatch(pauseMaze());
+    }
+  }, [start]);
+  const handleClose = useCallback(() => {
     setFormMazeSize(mazeSize);
     setOpen(false);
-    dispatch(restartMaze());
-    dispatch(startTick());
-  };
+    if (start) {
+      dispatch(restartMaze());
+      dispatch(startTick());
+    }
+  }, [start]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const mazeSize = parseInt(event.target.value, 10);
-    setFormMazeSize(mazeSize);
-  };
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const mazeSize = parseInt(event.target.value, 10);
+      setFormMazeSize(mazeSize);
+    },
+    [],
+  );
 
-  const handleRegenerate = () => {
+  const handleRegenerate = useCallback(() => {
     dispatch(setMazeSize(formMazeSize));
     dispatch(generateMaze());
     setOpen(false);
-  };
+  }, [formMazeSize]);
 
   return (
     <FabLayout>
