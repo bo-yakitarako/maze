@@ -6,8 +6,8 @@ import { TimeDisplay } from './TimeDisplay';
 
 const Timer: React.FC = () => {
   const { time, best, difference } = useShallowEqualSelector(
-    ({ timer, bestTime, mazeSize }) => {
-      const best = bestTime[mazeSize];
+    ({ mode, timer, bestTime, mazeSize }) => {
+      const best = bestTime[mode][mazeSize];
       return {
         time: timer.time,
         best: best || timer.time,

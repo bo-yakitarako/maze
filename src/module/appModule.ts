@@ -6,18 +6,32 @@ import {
   getDefaultMiddleware,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { MazeGenerator } from '../mazeGenerator/MazeGenerator';
+import { MazeGenerator } from '../mazeUtility/MazeGenerator';
 import { moveSquare } from '../reducers/appReducer';
 
 const mazeSize = localStorage.mazeSize * 1 || 20;
-const bestTime = JSON.parse(localStorage.bestTime || '{}') as {
-  [key in number]: number | undefined;
+let bestTime = JSON.parse(localStorage.bestTime || '{}') as {
+  [key in Mode]: BestTime;
 };
+
+if (!Object.keys(bestTime).includes('reach')) {
+  bestTime = {
+    reach: bestTime as any, // eslint-disable-line @typescript-eslint/no-explicit-any
+    longest: {},
+  };
+}
+
+type BestTime = { [key in number]: number | undefined };
+type Mode = 'reach' | 'longest';
+type Point = [number, number];
+
 const initialState = {
+  mode: 'reach' as Mode,
   mazeSize,
   mazeArray: [...Array(mazeSize + 2)].map(() =>
     [...Array(mazeSize + 2)].map(() => true),
   ),
+  answer: [] as Point[],
   goalX: mazeSize + 1,
   playerLocation: [1, mazeSize + 1] as [number, number],
   start: false,
@@ -45,7 +59,7 @@ const appModule = createSlice({
     },
     generateMaze: (state) => {
       const mazeGenerator = new MazeGenerator(state.mazeSize);
-      const mazeArray = mazeGenerator.generate();
+      const mazeArray = mazeGenerator.generate(state.mode);
       if (state.timer.intervalNumber > 0) {
         clearInterval(state.timer.intervalNumber);
       }

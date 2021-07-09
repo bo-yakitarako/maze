@@ -34,7 +34,7 @@ const moveSquare = (state: AppState, payload: Direction) => {
     state.pause = true;
     clearInterval(state.timer.intervalNumber);
     state.timer.intervalNumber = 0;
-    const bestTime = state.bestTime[state.mazeSize];
+    const bestTime = state.bestTime[state.mode][state.mazeSize];
     if (typeof bestTime === 'undefined' || state.timer.time < bestTime) {
       state.bestTime = {
         ...state.bestTime,
