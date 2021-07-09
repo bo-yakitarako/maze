@@ -1,19 +1,19 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { appModule } from '../module/appModule';
+import { appModule, Point } from '../module/appModule';
 import { useMediaQuery } from './useMediaQuery';
 import { useShallowEqualSelector } from './useShallowEqualSelector';
 
 const useDrawingMaze = () => {
   const dispatch = useDispatch();
-  const { mazeArray, playerLocation, start, pause, goalX } =
+  const { mazeArray, answer, playerLocation, start, pause } =
     useShallowEqualSelector(
-      ({ mazeArray, playerLocation, start, pause, goalX }) => ({
+      ({ mazeArray, answer, playerLocation, start, pause }) => ({
         mazeArray,
+        answer,
         playerLocation,
         start,
         pause,
-        goalX,
       }),
     );
 
@@ -23,9 +23,11 @@ const useDrawingMaze = () => {
     dispatch(appModule.actions.generateMaze());
   }, []);
   useEffect(() => {
-    const goal = playerLocation[0] === goalX && playerLocation[1] === 0;
-    const blind = !goal && (!start || pause);
-    drawMaze(mazeArray, playerLocation, windowWidth, blind);
+    const goal = answer[answer.length - 1];
+    const isGoal =
+      playerLocation[0] === goal[0] && playerLocation[1] === goal[1];
+    const blind = !isGoal && (!start || pause);
+    drawMaze(mazeArray, answer, playerLocation, windowWidth, blind);
   }, [mazeArray, playerLocation, windowWidth, start, pause]);
 };
 
@@ -52,7 +54,8 @@ const getRawCanvasWidth = (windowWidth: number) => {
 
 const drawMaze = (
   mazeArray: boolean[][],
-  [playerLocationX, playerLocationY]: [number, number],
+  answer: Point[],
+  [playerLocationX, playerLocationY]: Point,
   windowWidth: number,
   blind: boolean,
 ) => {
@@ -80,6 +83,7 @@ const drawMaze = (
     fillPlayerAndStart(mazeArray.length - 2);
     return;
   }
+  const [goalX, goalY] = answer[answer.length - 1];
   context.fillStyle = 'white';
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.fillStyle = 'black';
@@ -87,6 +91,11 @@ const drawMaze = (
     rowArray.forEach((isLoad, xIndex) => {
       if (!isLoad) {
         fillRect(xIndex, yIndex);
+      }
+      if (xIndex === goalX && yIndex === goalY) {
+        context.fillStyle = '#ff5c5c';
+        fillRect(xIndex, yIndex);
+        context.fillStyle = 'black';
       }
       if (xIndex === playerLocationX && yIndex === playerLocationY) {
         context.fillStyle = 'cyan';
