@@ -1,8 +1,8 @@
 const DIRECTIONS = [
+  [0, -1],
   [1, 0],
   [0, 1],
   [-1, 0],
-  [0, -1],
 ];
 
 class Digger {
@@ -15,11 +15,11 @@ class Digger {
     originalMazeArray: boolean[][],
     diggableLoads: [number, number][],
   ) {
-    this.mazeArray = [...originalMazeArray.map((row) => [...row])];
+    this.mazeArray = originalMazeArray.map((row) => [...row]);
     this.mazeWidth = this.mazeArray.length;
-    this.diggableLoads = [
-      ...diggableLoads.map((position) => [...position] as [number, number]),
-    ];
+    this.diggableLoads = diggableLoads.map(
+      (position) => [...position] as [number, number],
+    );
     this.addedLoads = [...this.diggableLoads];
   }
 
@@ -32,7 +32,7 @@ class Digger {
     while (nextPositions.length > 0) {
       const positionIndex = Math.floor(Math.random() * nextPositions.length);
       digPosition = nextPositions[positionIndex];
-      this.mazeArray[digPosition[0]][digPosition[1]] = true;
+      this.mazeArray[digPosition[1]][digPosition[0]] = true;
       this.addedLoads = [...this.addedLoads, digPosition];
       nextPositions = this.getNextPositions(digPosition);
     }
@@ -56,7 +56,7 @@ class Digger {
     [excludeX, excludeY]: [number, number],
   ) {
     if (
-      this.mazeArray[positionX][positionY] ||
+      this.mazeArray[positionY][positionX] ||
       positionX < 1 ||
       positionY < 1 ||
       positionX >= this.mazeWidth - 1 ||
@@ -71,7 +71,7 @@ class Digger {
       if (x === excludeX && y === excludeY) {
         continue; // eslint-disable-line no-continue
       }
-      if (this.mazeArray[x][y]) {
+      if (this.mazeArray[y][x]) {
         return false;
       }
     }
