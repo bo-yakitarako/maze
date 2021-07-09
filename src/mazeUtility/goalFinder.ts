@@ -11,17 +11,17 @@ const findAnswer = (mazeArray: boolean[][]) => {
   return createAnswer(mazeArray, foundRoads);
 };
 
-const createAnswer = (maze: boolean[][], roads: Point[]) => {
+const createAnswer = (mazeArray: boolean[][], roads: Point[]) => {
   let foundRoads = [...roads];
-  let nextPoints = getNextPoints(maze, foundRoads);
+  let nextPoints = getNextPoints(mazeArray, foundRoads);
   while (nextPoints.length === 1) {
     foundRoads = [...foundRoads, nextPoints[0]];
-    nextPoints = getNextPoints(maze, foundRoads);
+    nextPoints = getNextPoints(mazeArray, foundRoads);
   }
   const defaultAnswer = { reach: foundRoads, longest: foundRoads };
   return nextPoints.reduce((pre, nextPoint) => {
     const afterBranch = [...foundRoads, nextPoint];
-    const deadEnd = createAnswer(maze, afterBranch) as Road;
+    const deadEnd = createAnswer(mazeArray, afterBranch) as Road;
     const [, reachLastY] = deadEnd.reach[deadEnd.reach.length - 1];
     const reach = reachLastY === 0 ? deadEnd.reach : pre.reach;
     const isUpdateLongest = pre.longest.length < deadEnd.longest.length;
