@@ -18,9 +18,7 @@ const _findAnswer = (maze: boolean[][], roads: Point[], longest: Point[]) => {
   while (nextPoints.length === 1) {
     foundRoads = [...foundRoads, nextPoints[0]];
     if (nextPoints[0][1] === 0) {
-      const currentLongest =
-        longest.length < foundRoads.length ? foundRoads : longest;
-      return { reach: foundRoads, longest: currentLongest };
+      return { reach: foundRoads, longest };
     }
     nextPoints = getNextPoints(maze, foundRoads);
   }
