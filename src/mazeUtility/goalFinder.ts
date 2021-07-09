@@ -8,11 +8,10 @@ const findAnswer = (mazeArray: boolean[][]) => {
     [1, mazeArray.length - 1],
     [1, mazeArray.length - 2],
   ] as Point[];
-  return _findAnswer(mazeArray, foundRoads);
+  return createAnswer(mazeArray, foundRoads);
 };
 
-// eslint-disable-next-line no-underscore-dangle, @typescript-eslint/naming-convention
-const _findAnswer = (maze: boolean[][], roads: Point[]) => {
+const createAnswer = (maze: boolean[][], roads: Point[]) => {
   let foundRoads = [...roads];
   let nextPoints = getNextPoints(maze, foundRoads);
   while (nextPoints.length === 1) {
@@ -22,7 +21,7 @@ const _findAnswer = (maze: boolean[][], roads: Point[]) => {
   const defaultAnswer = { reach: foundRoads, longest: foundRoads };
   return nextPoints.reduce((pre, nextPoint) => {
     const afterBranch = [...foundRoads, nextPoint];
-    const deadEnd = _findAnswer(maze, afterBranch) as Road;
+    const deadEnd = createAnswer(maze, afterBranch) as Road;
     const [, reachLastY] = deadEnd.reach[deadEnd.reach.length - 1];
     const reach = reachLastY === 0 ? deadEnd.reach : pre.reach;
     if (pre.longest.length < deadEnd.longest.length) {
