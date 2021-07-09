@@ -6,6 +6,7 @@ import {
   getDefaultMiddleware,
   PayloadAction,
 } from '@reduxjs/toolkit';
+import { findAnswer } from '../mazeUtility/goalFinder';
 import { MazeGenerator } from '../mazeUtility/MazeGenerator';
 import { moveSquare } from '../reducers/appReducer';
 
@@ -23,7 +24,7 @@ if (!Object.keys(bestTime).includes('reach')) {
 
 type BestTime = { [key in number]: number | undefined };
 type Mode = 'reach' | 'longest';
-type Point = [number, number];
+export type Point = [number, number];
 
 const initialState = {
   mode: 'reach' as Mode,
@@ -60,12 +61,14 @@ const appModule = createSlice({
     generateMaze: (state) => {
       const mazeGenerator = new MazeGenerator(state.mazeSize);
       const mazeArray = mazeGenerator.generate(state.mode);
+      const answer = findAnswer(mazeArray)[state.mode];
       if (state.timer.intervalNumber > 0) {
         clearInterval(state.timer.intervalNumber);
       }
       return {
         ...state,
         mazeArray,
+        answer,
         goalX: mazeArray[0].findIndex((isLoad) => isLoad),
         playerLocation: [1, state.mazeSize + 1],
         start: false,

@@ -4,7 +4,7 @@ import { AppState, Direction } from '../module/appModule';
 
 // eslint-disable-next-line complexity
 const moveSquare = (state: AppState, payload: Direction) => {
-  const { mazeArray, goalX, playerLocation, start, pause } = state;
+  const { mazeArray, answer, playerLocation, start, pause } = state;
   if (pause) {
     return;
   }
@@ -30,7 +30,8 @@ const moveSquare = (state: AppState, payload: Direction) => {
   }
   state.playerLocation = [nextX, nextY];
 
-  if (nextX === goalX && nextY === 0) {
+  const [goalX, goalY] = answer[answer.length - 1];
+  if (nextX === goalX && nextY === goalY) {
     state.pause = true;
     clearInterval(state.timer.intervalNumber);
     state.timer.intervalNumber = 0;
@@ -38,7 +39,10 @@ const moveSquare = (state: AppState, payload: Direction) => {
     if (typeof bestTime === 'undefined' || state.timer.time < bestTime) {
       state.bestTime = {
         ...state.bestTime,
-        [state.mazeSize]: state.timer.time,
+        [state.mode]: {
+          ...state.bestTime[state.mode],
+          [state.mazeSize]: state.timer.time,
+        },
       };
       localStorage.bestTime = JSON.stringify(state.bestTime);
     }
