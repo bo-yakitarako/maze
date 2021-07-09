@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { getCanvasWidth, useDrawingMaze } from '../hooks/useDrawingMaze';
@@ -8,13 +8,14 @@ import { SettingDialog } from './SettingDialog';
 
 const MazeCanvas: React.FC = () => {
   const mazeSize = useAppSelector(({ mazeSize }) => mazeSize);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const { windowWidth } = useMediaQuery();
   const canvasSize = getCanvasWidth(mazeSize + 2, windowWidth);
-  useDrawingMaze();
+  useDrawingMaze(canvasRef.current as HTMLCanvasElement);
   useKeyboard();
   return (
     <MazeWrapper>
-      <canvas id="mazeCanvas" width={canvasSize} height={canvasSize} />
+      <canvas ref={canvasRef} width={canvasSize} height={canvasSize} />
       <SettingDialog />
     </MazeWrapper>
   );

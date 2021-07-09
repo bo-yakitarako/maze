@@ -4,7 +4,7 @@ import { appModule, Point } from '../module/appModule';
 import { useMediaQuery } from './useMediaQuery';
 import { useShallowEqualSelector } from './useShallowEqualSelector';
 
-const useDrawingMaze = () => {
+const useDrawingMaze = (canvas: HTMLCanvasElement) => {
   const dispatch = useDispatch();
   const { mazeArray, answer, playerLocation, start, pause, showAnswer } =
     useShallowEqualSelector(
@@ -29,8 +29,24 @@ const useDrawingMaze = () => {
     const isGoal =
       playerLocation[0] === goal[0] && playerLocation[1] === goal[1];
     const blind = !isGoal && !showAnswer && (!start || pause);
-    drawMaze(mazeArray, answer, playerLocation, windowWidth, blind, showAnswer);
-  }, [mazeArray, playerLocation, windowWidth, start, pause, showAnswer]);
+    drawMaze(
+      canvas,
+      mazeArray,
+      answer,
+      playerLocation,
+      windowWidth,
+      blind,
+      showAnswer,
+    );
+  }, [
+    canvas,
+    mazeArray,
+    playerLocation,
+    windowWidth,
+    start,
+    pause,
+    showAnswer,
+  ]);
 };
 
 export { useDrawingMaze, getCanvasWidth };
@@ -55,6 +71,7 @@ const getRawCanvasWidth = (windowWidth: number) => {
 };
 
 const drawMaze = (
+  canvas: HTMLCanvasElement,
   mazeArray: boolean[][],
   answer: Point[],
   [playerLocationX, playerLocationY]: Point,
@@ -62,8 +79,10 @@ const drawMaze = (
   blind: boolean,
   showAnswer: boolean,
 ) => {
+  if (canvas === null) {
+    return;
+  }
   const squareWidth = getSquareWidth(mazeArray.length, windowWidth);
-  const canvas = document.querySelector('#mazeCanvas') as HTMLCanvasElement;
   const context = canvas.getContext('2d') as CanvasRenderingContext2D;
   const fillRect = (x: number, y: number) => {
     context.fillRect(
