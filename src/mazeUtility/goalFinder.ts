@@ -24,10 +24,9 @@ const createAnswer = (maze: boolean[][], roads: Point[]) => {
     const deadEnd = createAnswer(maze, afterBranch) as Road;
     const [, reachLastY] = deadEnd.reach[deadEnd.reach.length - 1];
     const reach = reachLastY === 0 ? deadEnd.reach : pre.reach;
-    if (pre.longest.length < deadEnd.longest.length) {
-      return { reach, longest: deadEnd.longest };
-    }
-    return { ...pre, reach };
+    const isUpdateLongest = pre.longest.length < deadEnd.longest.length;
+    const longest = isUpdateLongest ? deadEnd.longest : pre.longest;
+    return { reach, longest };
   }, defaultAnswer);
 };
 
