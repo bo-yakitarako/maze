@@ -11,9 +11,10 @@ type ThunkAction = {
 const startTick = createAsyncThunk<void, void, ThunkAction>(
   'startTick',
   async (v, { dispatch, getState }) => {
-    const { timer, playerLocation, goalX, pause } = getState();
+    const { answer, timer, playerLocation, pause } = getState();
+    const [goalX, goalY] = answer[answer.length - 1];
     const [x, y] = playerLocation;
-    if (pause || timer.intervalNumber > 0 || (x === goalX && y === 0)) {
+    if (pause || timer.intervalNumber > 0 || (x === goalX && y === goalY)) {
       return;
     }
     const intervalNumber = window.setInterval(() => {

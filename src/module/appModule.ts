@@ -34,7 +34,6 @@ const initialState = {
     [...Array(mazeSize + 2)].map(() => true),
   ),
   answer: [[1, 1]] as Point[],
-  goalX: mazeSize + 1,
   playerLocation: [1, mazeSize + 1] as [number, number],
   start: false,
   pause: true,
@@ -103,8 +102,9 @@ const appModule = createSlice({
       state.timer.pausedUnixtime = new Date().getTime();
     },
     restartMaze: (state) => {
-      const { playerLocation, goalX } = state;
-      if (playerLocation[0] === goalX && playerLocation[1] === 0) {
+      const { playerLocation, answer } = state;
+      const [goalX, goalY] = answer[answer.length - 1];
+      if (playerLocation[0] === goalX && playerLocation[1] === goalY) {
         return;
       }
       state.pause = false;
