@@ -6,14 +6,15 @@ import { useShallowEqualSelector } from './useShallowEqualSelector';
 
 const useDrawingMaze = () => {
   const dispatch = useDispatch();
-  const { mazeArray, answer, playerLocation, start, pause } =
+  const { mazeArray, answer, playerLocation, start, pause, showAnswer } =
     useShallowEqualSelector(
-      ({ mazeArray, answer, playerLocation, start, pause }) => ({
+      ({ mazeArray, answer, playerLocation, start, pause, showAnswer }) => ({
         mazeArray,
         answer,
         playerLocation,
         start,
         pause,
+        showAnswer,
       }),
     );
 
@@ -27,9 +28,9 @@ const useDrawingMaze = () => {
     const goal = answer[answer.length - 1];
     const isGoal =
       playerLocation[0] === goal[0] && playerLocation[1] === goal[1];
-    const blind = !isGoal && (!start || pause);
-    drawMaze(mazeArray, answer, playerLocation, windowWidth, blind);
-  }, [mazeArray, playerLocation, windowWidth, start, pause]);
+    const blind = !isGoal && !showAnswer && (!start || pause);
+    drawMaze(mazeArray, answer, playerLocation, windowWidth, blind, showAnswer);
+  }, [mazeArray, playerLocation, windowWidth, start, pause, showAnswer]);
 };
 
 export { useDrawingMaze, getCanvasWidth };
@@ -59,6 +60,7 @@ const drawMaze = (
   [playerLocationX, playerLocationY]: Point,
   windowWidth: number,
   blind: boolean,
+  showAnswer: boolean,
 ) => {
   const squareWidth = getSquareWidth(mazeArray.length, windowWidth);
   const canvas = document.querySelector('#mazeCanvas') as HTMLCanvasElement;
@@ -85,24 +87,27 @@ const drawMaze = (
     return;
   }
   const [goalX, goalY] = answer[answer.length - 1];
-  context.fillStyle = 'white';
-  context.fillRect(0, 0, canvas.width, canvas.height);
   context.fillStyle = 'black';
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = 'white';
   mazeArray.forEach((rowArray, yIndex) => {
     rowArray.forEach((isLoad, xIndex) => {
-      if (!isLoad) {
+      if (isLoad) {
         fillRect(xIndex, yIndex);
-      }
-      if (xIndex === goalX && yIndex === goalY) {
-        context.fillStyle = '#ff5c5c';
-        fillRect(xIndex, yIndex);
-        context.fillStyle = 'black';
-      }
-      if (xIndex === playerLocationX && yIndex === playerLocationY) {
-        context.fillStyle = 'cyan';
-        fillRect(xIndex, yIndex);
-        context.fillStyle = 'black';
       }
     });
   });
+  if (showAnswer) {
+    context.fillStyle = '#d4fccc';
+    answer.slice(0, answer.length - 1).forEach(([x, y]) => {
+      fillRect(x, y);
+    });
+    context.fillStyle = '#ff5c5c';
+    fillRect(goalX, goalY);
+  } else {
+    context.fillStyle = '#ff5c5c';
+    fillRect(goalX, goalY);
+    context.fillStyle = 'cyan';
+    fillRect(playerLocationX, playerLocationY);
+  }
 };

@@ -18,8 +18,14 @@ import { appModule, Mode } from '../module/appModule';
 import { startTick } from '../actions/timerAction';
 import { ModeDescriptionDialog } from './ModeDescriptionDialog';
 
-const { setMode, setMazeSize, generateMaze, pauseMaze, restartMaze } =
-  appModule.actions;
+const {
+  setMode,
+  setMazeSize,
+  generateMaze,
+  pauseMaze,
+  restartMaze,
+  displayAnswer,
+} = appModule.actions;
 
 const modeTitle: { [key in Mode]: string } = {
   reach: '到達モード',
@@ -29,12 +35,13 @@ const modeTitle: { [key in Mode]: string } = {
 const SettingDialog: React.FC = () => {
   const dispatch = useDispatch();
 
-  const { mode, modes, mazeSize, start } = useAppSelector(
-    ({ mode, mazeSize, start, bestTime }) => ({
+  const { mode, modes, mazeSize, start, showAnswer } = useAppSelector(
+    ({ mode, mazeSize, start, bestTime, showAnswer }) => ({
       mode,
       modes: Object.keys(bestTime) as Mode[],
       mazeSize,
       start,
+      showAnswer,
     }),
   );
 
@@ -87,6 +94,11 @@ const SettingDialog: React.FC = () => {
     setOpen(false);
   }, [formMode, formMazeSize]);
 
+  const handleDiaplayAnswer = useCallback(() => {
+    dispatch(displayAnswer());
+    setOpen(false);
+  }, []);
+
   return (
     <FabLayout>
       <Fab color="primary" onClick={handleOpen}>
@@ -136,6 +148,11 @@ const SettingDialog: React.FC = () => {
           </TextFieldLayout>
         </DialogContent>
         <DialogActions>
+          {!showAnswer && (
+            <Button onClick={handleDiaplayAnswer} color="primary">
+              答えを見る
+            </Button>
+          )}
           <Button onClick={handleRegenerate} color="primary">
             再生成
           </Button>

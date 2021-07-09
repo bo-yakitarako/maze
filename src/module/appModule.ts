@@ -44,6 +44,7 @@ const initialState = {
     pauseInterval: 0,
     intervalNumber: 0,
   },
+  showAnswer: false,
   bestTime,
 };
 
@@ -87,6 +88,7 @@ const appModule = createSlice({
           pauseInterval: 0,
           pausedUnixtime: 0,
         },
+        showAnswer: false,
       };
     },
     move: (state, { payload }: PayloadAction<Direction>) => {
@@ -119,6 +121,13 @@ const appModule = createSlice({
     },
     setIntevalNumber: (state, { payload }: PayloadAction<number>) => {
       state.timer.intervalNumber = payload;
+    },
+    displayAnswer: (state) => {
+      return {
+        ...state,
+        showAnswer: true,
+        pause: true,
+      };
     },
   },
 });
