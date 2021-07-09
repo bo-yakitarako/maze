@@ -10,6 +10,7 @@ import { findAnswer } from '../mazeUtility/goalFinder';
 import { MazeGenerator } from '../mazeUtility/MazeGenerator';
 import { moveSquare } from '../reducers/appReducer';
 
+const mode = (localStorage.mode || 'reach') as Mode;
 const mazeSize = localStorage.mazeSize * 1 || 20;
 let bestTime = JSON.parse(localStorage.bestTime || '{}') as {
   [key in Mode]: BestTime;
@@ -23,16 +24,16 @@ if (!Object.keys(bestTime).includes('reach')) {
 }
 
 type BestTime = { [key in number]: number | undefined };
-type Mode = 'reach' | 'longest';
+export type Mode = 'reach' | 'longest';
 export type Point = [number, number];
 
 const initialState = {
-  mode: 'reach' as Mode,
+  mode,
   mazeSize,
   mazeArray: [...Array(mazeSize + 2)].map(() =>
     [...Array(mazeSize + 2)].map(() => true),
   ),
-  answer: [] as Point[],
+  answer: [[1, 1]] as Point[],
   goalX: mazeSize + 1,
   playerLocation: [1, mazeSize + 1] as [number, number],
   start: false,
@@ -51,6 +52,13 @@ const appModule = createSlice({
   name: 'maze',
   initialState,
   reducers: {
+    setMode: (state, { payload }: PayloadAction<Mode>) => {
+      localStorage.mode = payload;
+      return {
+        ...state,
+        mode: payload,
+      };
+    },
     setMazeSize: (state, { payload }: PayloadAction<number>) => {
       localStorage.mazeSize = payload;
       return {

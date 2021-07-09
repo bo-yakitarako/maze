@@ -14,29 +14,44 @@ import {
 } from '@material-ui/core';
 import { Settings } from '@material-ui/icons';
 import { useAppSelector } from '../hooks/useAppSelector';
-import { appModule } from '../module/appModule';
+import { appModule, Mode } from '../module/appModule';
 import { startTick } from '../actions/timerAction';
+import { ModeDescriptionDialog } from './ModeDescriptionDialog';
 
-const { setMazeSize, generateMaze, pauseMaze, restartMaze } = appModule.actions;
+const { setMode, setMazeSize, generateMaze, pauseMaze, restartMaze } =
+  appModule.actions;
+
+const modeTitle: { [key in Mode]: string } = {
+  reach: '到達モード',
+  longest: '最長モード',
+};
 
 const SettingDialog: React.FC = () => {
   const dispatch = useDispatch();
 
-  const { mazeSize, start } = useAppSelector(({ mazeSize, start }) => ({
-    mazeSize,
-    start,
-  }));
+  const { mode, modes, mazeSize, start } = useAppSelector(
+    ({ mode, mazeSize, start, bestTime }) => ({
+      mode,
+      modes: Object.keys(bestTime) as Mode[],
+      mazeSize,
+      start,
+    }),
+  );
 
+  const [formMode, setFormMode] = useState(mode);
   const [formMazeSize, setFormMazeSize] = useState(mazeSize);
+
   const [open, setOpen] = useState(false);
+  const [modeDescriptionOpen, setModeDescriptionOpen] = useState(false);
+
   const handleOpen = useCallback(() => {
     setOpen(true);
     if (start) {
       dispatch(pauseMaze());
     }
   }, [start]);
+
   const handleClose = useCallback(() => {
-    setFormMazeSize(mazeSize);
     setOpen(false);
     if (start) {
       dispatch(restartMaze());
@@ -44,7 +59,20 @@ const SettingDialog: React.FC = () => {
     }
   }, [start]);
 
-  const handleChange = useCallback(
+  const handleModeDescriptionOpen = useCallback(() => {
+    setOpen(false);
+    setModeDescriptionOpen(true);
+  }, []);
+
+  const handleModeChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const mode = event.target.value as Mode;
+      setFormMode(mode);
+    },
+    [],
+  );
+
+  const handleSizeChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const mazeSize = parseInt(event.target.value, 10);
       setFormMazeSize(mazeSize);
@@ -53,10 +81,11 @@ const SettingDialog: React.FC = () => {
   );
 
   const handleRegenerate = useCallback(() => {
+    dispatch(setMode(formMode));
     dispatch(setMazeSize(formMazeSize));
     dispatch(generateMaze());
     setOpen(false);
-  }, [formMazeSize]);
+  }, [formMode, formMazeSize]);
 
   return (
     <FabLayout>
@@ -70,27 +99,40 @@ const SettingDialog: React.FC = () => {
             PCの場合は十字キーで、スマホの場合は画面下部のコントローラーで操作できるよ。たぶんね
           </DialogContentText>
           <DialogContentText>
-            スタート時や、この設定画面を開いたときは迷路の中身は見えないようになってるよ。タイマー停止状態で迷路の予習ができちゃうからね
-          </DialogContentText>
-          <DialogContentText>
             迷路を作り直したり、迷路の大きさを変えたい場合は好きなサイズを選んで「再生成」を押そうね
           </DialogContentText>
+          <DialogContentText color="primary">
+            <AboutMode onClick={handleModeDescriptionOpen}>
+              モードについて
+            </AboutMode>
+          </DialogContentText>
           <TextFieldLayout>
-            <TextField
-              autoFocus
+            <StyledTextField
+              select
+              label="モード"
+              value={formMode}
+              variant="outlined"
+              onChange={handleModeChange}
+            >
+              {modes.map((value) => (
+                <MenuItem key={value} value={`${value}`}>
+                  {modeTitle[value]}
+                </MenuItem>
+              ))}
+            </StyledTextField>
+            <StyledTextField
               select
               label="迷路の大きさ"
               value={`${formMazeSize}`}
-              helperText="迷路1辺のマスの数だよ"
               variant="outlined"
-              onChange={handleChange}
+              onChange={handleSizeChange}
             >
               {[10, 20, 30, 40, 50].map((value) => (
                 <MenuItem key={value} value={`${value}`}>
                   {value}
                 </MenuItem>
               ))}
-            </TextField>
+            </StyledTextField>
           </TextFieldLayout>
         </DialogContent>
         <DialogActions>
@@ -102,6 +144,11 @@ const SettingDialog: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <ModeDescriptionDialog
+        open={modeDescriptionOpen}
+        handleThisDialog={setModeDescriptionOpen}
+        handleSettingDialog={setOpen}
+      />
     </FabLayout>
   );
 };
@@ -114,8 +161,22 @@ const FabLayout = styled.div`
   bottom: -60px;
 `;
 
+const AboutMode = styled.span`
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+`;
+
 const TextFieldLayout = styled.div`
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   margin-top: 20px;
+`;
+
+const StyledTextField = styled(TextField)`
+  width: 200px;
+  margin-bottom: 16px;
 `;

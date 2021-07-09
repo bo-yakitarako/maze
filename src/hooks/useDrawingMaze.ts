@@ -22,6 +22,7 @@ const useDrawingMaze = () => {
   useEffect(() => {
     dispatch(appModule.actions.generateMaze());
   }, []);
+
   useEffect(() => {
     const goal = answer[answer.length - 1];
     const isGoal =
