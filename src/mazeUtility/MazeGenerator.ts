@@ -1,6 +1,5 @@
+import { Mode } from '../module/appModule';
 import { Digger } from './Digger';
-
-type Mode = 'reach' | 'longest';
 
 class MazeGenerator {
   private mazeArray: boolean[][];

@@ -79,4 +79,4 @@ class Digger {
   }
 }
 
-export { Digger };
+export { Digger, DIRECTIONS };

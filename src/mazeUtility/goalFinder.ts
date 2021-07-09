@@ -1,85 +1,51 @@
-type Point = [number, number];
-type Road = {
-  reach: Point[];
-  longest: Point[];
-};
+import { Point } from '../module/appModule';
+import { DIRECTIONS } from './Digger';
 
-const DIRECTIONS = [
-  [0, -1],
-  [1, 0],
-  [0, 1],
-  [-1, 0],
-];
+type Road = { reach: Point[]; longest: Point[] };
 
 const findAnswer = (mazeArray: boolean[][]) => {
   const foundRoads = [
     [1, mazeArray.length - 1],
     [1, mazeArray.length - 2],
   ] as Point[];
-  return findAnswerRecursion(mazeArray, foundRoads, foundRoads);
+  return _findAnswer(mazeArray, foundRoads, [...foundRoads]);
 };
 
-const findAnswerRecursion = (
-  mazeArray: boolean[][],
-  defaultFoundRoads: Point[],
-  defaultLongest: Point[],
-): Road => {
-  let foundRoads = [...defaultFoundRoads];
-  let nextPoints = getNextPoints(mazeArray, foundRoads);
-  const answer = { reach: foundRoads, longest: defaultLongest };
+// eslint-disable-next-line no-underscore-dangle, @typescript-eslint/naming-convention
+const _findAnswer = (maze: boolean[][], roads: Point[], longest: Point[]) => {
+  let foundRoads = [...roads];
+  let nextPoints = getNextPoints(maze, foundRoads);
   while (nextPoints.length === 1) {
     foundRoads = [...foundRoads, nextPoints[0]];
     if (nextPoints[0][1] === 0) {
-      answer.reach = foundRoads;
-      nextPoints = [];
-      break;
+      return { reach: foundRoads, longest };
     }
-    nextPoints = getNextPoints(mazeArray, foundRoads);
+    nextPoints = getNextPoints(maze, foundRoads);
   }
-  return parseAnswer(mazeArray, answer, foundRoads, nextPoints);
+  if (nextPoints.length === 0 && foundRoads.length > longest.length) {
+    longest = foundRoads; // eslint-disable-line no-param-reassign
+  }
+  const defaultAnswer = { reach: [...foundRoads], longest };
+  return nextPoints.reduce((pre, nextPoint) => {
+    const afterBranch = [...foundRoads, nextPoint];
+    if (nextPoint[1] === 0) {
+      return { ...pre, reach: afterBranch };
+    }
+    const deadEnd = _findAnswer(maze, afterBranch, pre.longest) as Road;
+    const [, reachLastY] = deadEnd.reach[deadEnd.reach.length - 1];
+    const reach = reachLastY === 0 ? deadEnd.reach : pre.reach;
+    if (pre.longest.length < deadEnd.longest.length) {
+      return { reach, longest: deadEnd.longest };
+    }
+    return { ...pre, reach };
+  }, defaultAnswer);
 };
 
 const getNextPoints = (mazeArray: boolean[][], foundRoads: Point[]) => {
-  const foundRoadsFromLast = [...foundRoads].reverse();
-  const [currentX, currentY] = foundRoadsFromLast[0];
-  const [preRoadX, preRoadY] = foundRoadsFromLast[1];
-  return DIRECTIONS.map(([moveX, moveY]) => [
-    currentX + moveX,
-    currentY + moveY,
-  ]).filter(
-    ([x, y]) => mazeArray[y][x] && !(x === preRoadX && y === preRoadY),
+  const [[currentX, currentY], [preX, preY]] = [...foundRoads].reverse();
+  return DIRECTIONS.map(([x, y]) => [currentX + x, currentY + y]).filter(
+    ([x, y]) => mazeArray[y][x] && !(x === preX && y === preY),
   ) as Point[];
-};
-
-const parseAnswer = (
-  mazeArray: boolean[][],
-  answer: Road,
-  foundRoads: Point[],
-  nextPoints: Point[],
-): Road => {
-  let { reach, longest } = answer;
-  if (nextPoints.length === 0 && foundRoads.length > longest.length) {
-    longest = foundRoads;
-  }
-  nextPoints.forEach((nextPoint) => {
-    const foundRoadsAfterCrossroad = [...foundRoads, nextPoint];
-    if (nextPoint[1] === 0) {
-      reach = foundRoadsAfterCrossroad;
-      return;
-    }
-    const roadOnDeadEnd = findAnswerRecursion(
-      mazeArray,
-      foundRoadsAfterCrossroad,
-      longest,
-    );
-    if (roadOnDeadEnd.reach[roadOnDeadEnd.reach.length - 1][1] === 0) {
-      reach = roadOnDeadEnd.reach;
-    }
-    if (roadOnDeadEnd.longest.length > answer.longest.length) {
-      longest = roadOnDeadEnd.longest;
-    }
-  });
-  return { reach, longest };
 };
 
 export { findAnswer };
