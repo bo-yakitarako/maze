@@ -26,12 +26,14 @@ const useKeyboard = () => {
   const handleKeyDown = (event: KeyboardEvent) => {
     const key = event.key as Arrow;
     if (Object.keys(keyToDirection).includes(key)) {
+      event.preventDefault();
       go(keyToDirection[key]);
     }
   };
 
   const handleKeyUp = (event: KeyboardEvent) => {
     if (Object.keys(keyToDirection).includes(event.key)) {
+      event.preventDefault();
       stop();
     }
   };
