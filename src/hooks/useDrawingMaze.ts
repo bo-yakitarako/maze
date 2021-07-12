@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { appModule, Point } from '../module/appModule';
+import { BREAKPOINT } from '../module/styleUtility';
 import { useMediaQuery } from './useMediaQuery';
 import { useShallowEqualSelector } from './useShallowEqualSelector';
 
@@ -61,13 +62,13 @@ const getSquareWidth = (mazeSize: number, windowWidth: number) => {
 };
 
 const getRawCanvasWidth = (windowWidth: number) => {
-  if (windowWidth < 448) {
+  if (windowWidth < BREAKPOINT.SMALL) {
     return windowWidth * 0.9;
   }
-  if (windowWidth < 778) {
+  if (windowWidth < BREAKPOINT.MEDIUM) {
     return windowWidth * 0.75;
   }
-  return 560;
+  return 600;
 };
 
 const drawMaze = (
