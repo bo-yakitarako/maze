@@ -98,14 +98,13 @@ const drawMaze = (
     context.fillStyle = 'white';
     const fillPlayerAndStart = (y: number) => {
       context.fillStyle =
-        playerLocationX === 1 && y === playerLocationY ? 'cyan' : 'white';
+        playerLocationX === 1 && playerLocationY === y ? 'cyan' : 'white';
       fillRect(1, y);
     };
     fillPlayerAndStart(mazeArray.length - 1);
     fillPlayerAndStart(mazeArray.length - 2);
     return;
   }
-  const [goalX, goalY] = answer[answer.length - 1];
   context.fillStyle = 'black';
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.fillStyle = 'white';
@@ -116,11 +115,11 @@ const drawMaze = (
       }
     });
   });
+
+  const [goalX, goalY] = answer[answer.length - 1];
   if (showAnswer) {
     context.fillStyle = '#d4fccc';
-    answer.slice(0, answer.length - 1).forEach(([x, y]) => {
-      fillRect(x, y);
-    });
+    answer.slice(0, answer.length - 1).forEach(([x, y]) => fillRect(x, y));
     context.fillStyle = '#ff5c5c';
     fillRect(goalX, goalY);
   } else {
