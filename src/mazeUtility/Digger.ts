@@ -31,12 +31,12 @@ class Digger {
       this.diggableRoads = [...this.diggableRoads, digPositions[1]];
       nextPositions = this.getNextPositions(digPositions[1]);
     }
-    const nextAvailableLoads = this.diggableRoads.filter(
+    const nextDiggableRoads = this.diggableRoads.filter(
       (loadPosition) => this.getNextPositions(loadPosition).length !== 0,
     );
     return {
       mazeArray: this.mazeArray,
-      nextAvailableLoads,
+      nextDiggableRoads,
     };
   }
 

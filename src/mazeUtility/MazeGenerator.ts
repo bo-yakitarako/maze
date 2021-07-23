@@ -15,12 +15,12 @@ class MazeGenerator {
   }
 
   public generate(mode: Mode) {
-    let availableLoads = [[1, this.mazeWidth - 2]] as [number, number][];
-    while (availableLoads.length > 0) {
-      const digger = new Digger(this.mazeArray, availableLoads);
-      const { mazeArray, nextAvailableLoads } = digger.dig();
+    let diggableRoads = [[1, this.mazeWidth - 2]] as [number, number][];
+    while (diggableRoads.length > 0) {
+      const digger = new Digger(this.mazeArray, diggableRoads);
+      const { mazeArray, nextDiggableRoads } = digger.dig();
       this.mazeArray = mazeArray;
-      availableLoads = nextAvailableLoads;
+      diggableRoads = nextDiggableRoads;
     }
     if (mode === 'reach') {
       this.mazeArray[0][this.mazeWidth - 2] = true;
