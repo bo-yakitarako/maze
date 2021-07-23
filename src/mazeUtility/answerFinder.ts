@@ -1,5 +1,5 @@
 import { Point } from '../module/appModule';
-import { DIRECTIONS } from './Digger';
+import { DIRECTIONS } from './generator';
 
 type Road = { reach: Point[]; longest: Point[] };
 

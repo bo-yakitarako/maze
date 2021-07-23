@@ -6,8 +6,8 @@ import {
   getDefaultMiddleware,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { findAnswer } from '../mazeUtility/goalFinder';
-import { MazeGenerator } from '../mazeUtility/MazeGenerator';
+import { findAnswer } from '../mazeUtility/answerFinder';
+import { generate } from '../mazeUtility/generator';
 import { moveSquare } from '../reducers/appReducer';
 
 const mode = (localStorage.mode || 'reach') as Mode;
@@ -67,8 +67,7 @@ const appModule = createSlice({
       };
     },
     generateMaze: (state) => {
-      const mazeGenerator = new MazeGenerator(state.mazeSize);
-      const mazeArray = mazeGenerator.generate(state.mode);
+      const mazeArray = generate(state.mazeSize, state.mode);
       const answer = findAnswer(mazeArray)[state.mode];
       if (state.timer.intervalNumber > 0) {
         clearInterval(state.timer.intervalNumber);
