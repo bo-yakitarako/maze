@@ -6,12 +6,12 @@ class MazeGenerator {
   private mazeWidth: number;
 
   constructor(width: number) {
-    this.mazeWidth = width + 2;
+    this.mazeWidth = width + 3;
     this.mazeArray = [...Array(this.mazeWidth)].map(() =>
       [...Array(this.mazeWidth)].map(() => false),
     );
     // eslint-disable-next-line no-multi-assign
-    this.mazeArray[width + 1][1] = this.mazeArray[width][1] = true;
+    this.mazeArray[width + 2][1] = this.mazeArray[width + 1][1] = true;
   }
 
   public generate(mode: Mode) {
@@ -23,14 +23,7 @@ class MazeGenerator {
       availableLoads = nextAvailableLoads;
     }
     if (mode === 'reach') {
-      let goalX = this.mazeWidth - 2;
-      while (goalX > 0) {
-        if (this.mazeArray[1][goalX]) {
-          this.mazeArray[0][goalX] = true;
-          break;
-        }
-        goalX -= 1;
-      }
+      this.mazeArray[0][this.mazeWidth - 2] = true;
     }
     return this.mazeArray;
   }

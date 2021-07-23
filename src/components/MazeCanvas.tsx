@@ -7,10 +7,10 @@ import { useMediaQuery } from '../hooks/useMediaQuery';
 import { SettingDialog } from './SettingDialog';
 
 const MazeCanvas: React.FC = () => {
-  const mazeSize = useAppSelector(({ mazeSize }) => mazeSize);
+  const mazeSize = useAppSelector(({ mazeArray }) => mazeArray.length);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { windowWidth } = useMediaQuery();
-  const canvasSize = getCanvasWidth(mazeSize + 2, windowWidth);
+  const canvasSize = getCanvasWidth(mazeSize, windowWidth);
   useDrawingMaze(canvasRef.current as HTMLCanvasElement);
   useKeyboard();
   return (

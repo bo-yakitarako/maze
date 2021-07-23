@@ -30,11 +30,11 @@ export type Point = [number, number];
 const initialState = {
   mode,
   mazeSize,
-  mazeArray: [...Array(mazeSize + 2)].map(() =>
-    [...Array(mazeSize + 2)].map(() => true),
+  mazeArray: [...Array(mazeSize + 3)].map(() =>
+    [...Array(mazeSize + 3)].map(() => true),
   ),
   answer: [[1, 1]] as Point[],
-  playerLocation: [1, mazeSize + 1] as [number, number],
+  playerLocation: [1, mazeSize + 2] as [number, number],
   start: false,
   pause: true,
   timer: {
@@ -78,7 +78,7 @@ const appModule = createSlice({
         mazeArray,
         answer,
         goalX: mazeArray[0].findIndex((isLoad) => isLoad),
-        playerLocation: [1, state.mazeSize + 1],
+        playerLocation: [1, state.mazeSize + 2],
         start: false,
         pause: false,
         timer: {
