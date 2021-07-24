@@ -11,7 +11,7 @@ const generate = (size: number, mode: Mode) => {
   const width = size + 3;
   const maze = [...Array(width)].map(() => [...Array(width)].map(() => false));
   maze[width - 1][1] = maze[width - 2][1] = true; // eslint-disable-line no-multi-assign
-  let diggableRoads = [[1, width - 2]] as [number, number][];
+  let diggableRoads = [[1, width - 2]] as Point[];
   while (diggableRoads.length > 0) {
     diggableRoads = dig(maze, diggableRoads);
   }
@@ -30,12 +30,10 @@ const dig = (maze: boolean[][], diggableRoads: Point[]) => {
   let nextPositions = getNextPositions(maze, digPosition);
   while (nextPositions.length > 0) {
     const positionIndex = Math.floor(Math.random() * nextPositions.length);
-    const digPositions = nextPositions[positionIndex];
-    digPositions.forEach(([x, y]) => {
-      maze[y][x] = true;
-    });
-    diggableRoads = [...diggableRoads, digPositions[1]];
-    nextPositions = getNextPositions(maze, digPositions[1]);
+    const { pre, next } = nextPositions[positionIndex];
+    maze[pre[1]][pre[0]] = maze[next[1]][next[0]] = true; // eslint-disable-line no-multi-assign
+    diggableRoads = [...diggableRoads, next];
+    nextPositions = getNextPositions(maze, next);
   }
   return diggableRoads.filter(
     (roadPoint) => getNextPositions(maze, roadPoint).length !== 0,
@@ -45,13 +43,11 @@ const dig = (maze: boolean[][], diggableRoads: Point[]) => {
 const getNextPositions = (maze: boolean[][], [digX, digY]: Point) => {
   return DIRECTIONS.filter(([nextX, nextY]) =>
     canDigNext(maze, [digX + nextX, digY + nextY], [digX, digY]),
-  ).map(
-    ([nextX, nextY]) =>
-      [
-        [digX + nextX, digY + nextY],
-        [digX + 2 * nextX, digY + 2 * nextY],
-      ] as [Point, Point],
-  );
+  ).map(([nextX, nextY]) => {
+    const pre = [digX + nextX, digY + nextY] as Point;
+    const next = [digX + 2 * nextX, digY + 2 * nextY] as Point;
+    return { pre, next };
+  });
 };
 
 const canDigNext = (maze: boolean[][], position: Point, exclude: Point) => {
