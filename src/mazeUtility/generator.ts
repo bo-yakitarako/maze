@@ -51,15 +51,11 @@ const getNextPositions = (maze: boolean[][], [digX, digY]: Point) => {
 };
 
 const canDigNext = (maze: boolean[][], position: Point, exclude: Point) => {
-  if (position.some((xy) => xy < 1 || xy >= maze.length - 1)) {
+  if (position.some((xy) => xy <= 0 || xy >= maze.length - 1)) {
     return false;
   }
-  const [positionX, positionY] = position;
-  const [excludeX, excludeY] = exclude;
-  const isArroundWall = DIRECTIONS.every(([nextX, nextY]) => {
-    const x = positionX + nextX;
-    const y = positionY + nextY;
-    return (x === excludeX && y === excludeY) || !maze[y][x];
+  return [...DIRECTIONS, [0, 0]].every(([nextX, nextY]) => {
+    const [x, y] = [position[0] + nextX, position[1] + nextY];
+    return (x === exclude[0] && y === exclude[1]) || !maze[y][x];
   });
-  return !maze[positionY][positionX] && isArroundWall;
 };
