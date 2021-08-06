@@ -76,7 +76,6 @@ const appModule = createSlice({
         ...state,
         mazeArray,
         answer,
-        goalX: mazeArray[0].findIndex((isLoad) => isLoad),
         playerLocation: [1, state.mazeSize + 2],
         start: false,
         pause: false,
