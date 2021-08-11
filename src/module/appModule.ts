@@ -11,7 +11,7 @@ import { generate } from '../mazeUtility/generator';
 import { moveSquare } from '../reducers/appReducer';
 
 const mode = (localStorage.mode || 'reach') as Mode;
-const mazeSize = localStorage.mazeSize * 1 || 20;
+const mazeSize = localStorage.size * 1 || 20;
 let bestTime = JSON.parse(localStorage.bestTime || '{}') as {
   [key in Mode]: BestTime;
 };
@@ -60,7 +60,7 @@ const appModule = createSlice({
       };
     },
     setMazeSize: (state, { payload }: PayloadAction<number>) => {
-      localStorage.mazeSize = payload;
+      localStorage.size = payload;
       return {
         ...state,
         mazeSize: payload,
